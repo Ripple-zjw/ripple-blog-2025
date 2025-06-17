@@ -107,8 +107,6 @@ buildExpired = false
 [outputs]
   home = ["HTML", "RSS", "JSON"]
 
-pygmentsUseClasses = true
-
 [markup]
   [markup.highlight]
     noClasses = false

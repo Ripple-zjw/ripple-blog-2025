@@ -1,0 +1,47 @@
+{{/* 获取全部代码块，格式为 ```lang\ncode\n``` */}}
+{{ $blocks := findRESubmatch "```([a-zA-Z0-9_+-]*)\\n([\\s\\S]*?)\\n```" (.Inner | string) }}
+
+{{ if lt (len $blocks) 1 }}
+  <p><strong>错误：</strong> 必须至少提供一个代码块</p>
+{{ else }}
+
+<div class="code-tabs">
+  <div class="tab-buttons">
+    {{ range $i, $block := $blocks }}
+      {{ $lang := index $block 1 }}
+      <button onclick="showCodeTab('code-tab-{{ $i }}')">{{ $lang | title }}</button>
+    {{ end }}
+  </div>
+
+  {{ range $i, $block := $blocks }}
+    {{ $lang := index $block 1 }}
+    {{ $code := index $block 2 }}
+    <div id="code-tab-{{ $i }}" class="code-block" style="{{ if ne $i 0 }}display: none;{{ end }}">
+      {{ highlight $code $lang "" }}
+    </div>
+  {{ end }}
+</div>
+
+<script>
+  function showCodeTab(id) {
+    document.querySelectorAll('.code-block').forEach(el => el.style.display = 'none');
+    document.getElementById(id).style.display = 'block';
+  }
+</script>
+
+<style>
+  .tab-buttons {
+    margin-bottom: 10px;
+  }
+  .tab-buttons button {
+    margin-right: 5px;
+    padding: 4px 10px;
+    font-size: 0.9em;
+    cursor: pointer;
+  }
+  .code-block {
+    margin-top: 5px;
+  }
+</style>
+
+{{ end }}

@@ -1,4 +1,4 @@
-baseURL = 'https://example.org/'
+baseURL = 'https://ripple-blog-2025.pages.dev/'
 title = 'Welcome to my Blog'
 theme = 'PaperMod'
 languageCode = "zh-cn"

@@ -1,47 +1,66 @@
-{{/* 获取全部代码块，格式为 ```lang\ncode\n``` */}}
-{{ $blocks := findRESubmatch "```([a-zA-Z0-9_+-]*)\\n([\\s\\S]*?)\\n```" (.Inner | string) }}
+{{/* codetabs.html - 纯 CSS 多语言代码切换短代码 */}}
+
+{{ $blocks := findRESubmatch "```([a-zA-Z0-9_+-]+)\\n([\\s\\S]*?)\\n```" (.Inner | string) }}
 
 {{ if lt (len $blocks) 1 }}
-  <p><strong>错误：</strong> 必须至少提供一个代码块</p>
+  <p><strong>错误：</strong> 必须至少提供一个代码块。</p>
 {{ else }}
+  {{ $uid := .Get 0 }}
 
-<div class="code-tabs">
-  <div class="tab-buttons">
+  <div class="code-tabs-{{ $uid }}">
     {{ range $i, $block := $blocks }}
       {{ $lang := index $block 1 }}
-      <button onclick="showCodeTab('code-tab-{{ $i }}')">{{ $lang | title }}</button>
+      <input type="radio" name="tab-{{ $uid }}" id="tab-{{ $uid }}-{{ $i }}" {{ if eq $i 0 }}checked{{ end }} hidden>
     {{ end }}
+
+    <div class="tab-buttons">
+      {{ range $i, $block := $blocks }}
+        {{ $lang := index $block 1 }}
+        <label for="tab-{{ $uid }}-{{ $i }}">{{ $lang | title }}</label>
+      {{ end }}
+    </div>
+
+    <div class="tab-contents">
+      {{ range $i, $block := $blocks }}
+        {{ $code := index $block 2 }}
+        <div class="tab-content tab-{{ $uid }}-{{ $i }}">
+          {{ highlight $code (index $block 1) "" }}
+        </div>
+      {{ end }}
+    </div>
   </div>
 
-  {{ range $i, $block := $blocks }}
-    {{ $lang := index $block 1 }}
-    {{ $code := index $block 2 }}
-    <div id="code-tab-{{ $i }}" class="code-block" style="{{ if ne $i 0 }}display: none;{{ end }}">
-      {{ highlight $code $lang "" }}
-    </div>
-  {{ end }}
-</div>
-
-<script>
-  function showCodeTab(id) {
-    document.querySelectorAll('.code-block').forEach(el => el.style.display = 'none');
-    document.getElementById(id).style.display = 'block';
-  }
-</script>
-
-<style>
-  .tab-buttons {
-    margin-bottom: 10px;
-  }
-  .tab-buttons button {
-    margin-right: 5px;
-    padding: 4px 10px;
-    font-size: 0.9em;
-    cursor: pointer;
-  }
-  .code-block {
-    margin-top: 5px;
-  }
-</style>
-
+  <style>
+    .code-tabs-{{ $uid }} {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 10px;
+    }
+    .code-tabs-{{ $uid }} input {
+      display: none;
+    }
+    .code-tabs-{{ $uid }} .tab-buttons {
+      display: flex;
+      gap: 0.5em;
+      margin-bottom: 0.5em;
+    }
+    .code-tabs-{{ $uid }} label {
+      background: #eee;
+      padding: 0.3em 0.8em;
+      border-radius: 3px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    {{ range $i, $block := $blocks }}
+      #tab-{{ $uid }}-{{ $i }}:checked ~ .tab-buttons label[for="tab-{{ $uid }}-{{ $i }}"] {
+        background: #ccc;
+      }
+      #tab-{{ $uid }}-{{ $i }}:checked ~ .tab-contents .tab-{{ $uid }}-{{ $i }} {
+        display: block;
+      }
+    {{ end }}
+    .code-tabs-{{ $uid }} .tab-content {
+      display: none;
+    }
+  </style>
 {{ end }}

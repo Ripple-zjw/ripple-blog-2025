@@ -2,7 +2,7 @@
 date = '2025-06-17T15:52:42+08:00'
 draft = false
 title = 'N皇后问题'
-tags = ["回溯算法", "图论"]
+tags = ["回溯算法", "递归"]
 categories = ["算法"]
 +++
 

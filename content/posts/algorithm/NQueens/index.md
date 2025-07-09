@@ -176,65 +176,65 @@ if __name__ == "__main__":
 package main
 
 import (
-	"bufio"
-	"fmt"
-	"os"
-	"strconv"
+    "bufio"
+    "fmt"
+    "os"
+    "strconv"
 )
 
 type NQueensSolver struct{}
 
 func solveNQueens(n int) [][]int {
-	var res [][]int
-	queens := make([]int, n)
-	for i := range queens {
-		queens[i] = -1
-	}
+    var res [][]int
+    queens := make([]int, n)
+    for i := range queens {
+        queens[i] = -1
+    }
 
-	var dfs func(row, ls, ms, rs int)
-	dfs = func(row, ls, ms, rs int) {
-		if row == n {
-			solution := make([]int, n)
-			copy(solution, queens)
-			res = append(res, solution)
-			return
-		}
-		status := ls | ms | rs
-		for col := 0; col < n; col++ {
-			bit := 1 << col
-			if status&bit == 0 {
-				queens[row] = col
-				dfs(row+1, (ls|bit)<<1, ms|bit, (rs|bit)>>1)
-				queens[row] = -1
-			}
-		}
-	}
+    var dfs func(row, ls, ms, rs int)
+    dfs = func(row, ls, ms, rs int) {
+        if row == n {
+            solution := make([]int, n)
+            copy(solution, queens)
+            res = append(res, solution)
+            return
+        }
+        status := ls | ms | rs
+        for col := 0; col < n; col++ {
+            bit := 1 << col
+            if status&bit == 0 {
+                queens[row] = col
+                dfs(row+1, (ls|bit)<<1, ms|bit, (rs|bit)>>1)
+                queens[row] = -1
+            }
+        }
+    }
 
-	dfs(0, 0, 0, 0)
-	return res
+    dfs(0, 0, 0, 0)
+    return res
 }
 
 func printNQueens(queens []int) {
-	n := len(queens)
-	for i := 0; i < n; i++ {
-		row := make([]byte, n)
-		for j := range row {
-			row[j] = '.'
-		}
-		row[queens[i]] = 'Q'
-		fmt.Println(string(row))
-	}
-	fmt.Println()
+    n := len(queens)
+    for i := 0; i < n; i++ {
+        row := make([]byte, n)
+        for j := range row {
+            row[j] = '.'
+        }
+        row[queens[i]] = 'Q'
+        fmt.Println(string(row))
+    }
+    fmt.Println()
 }
 
 func main() {
-	scanner := bufio.NewScanner(os.Stdin)
-	scanner.Scan()
-	n, _ := strconv.Atoi(scanner.Text())
-	solutions := solveNQueens(n)
-	for _, sol := range solutions {
-		printNQueens(sol)
-	}
+    scanner := bufio.NewScanner(os.Stdin)
+    scanner.Scan()
+    n, _ := strconv.Atoi(scanner.Text())
+    solutions := solveNQueens(n)
+    for _, sol := range solutions {
+        printNQueens(sol)
+    }
 }
 
 ```

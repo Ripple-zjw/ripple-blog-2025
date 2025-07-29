@@ -396,6 +396,99 @@ int main() {
 | 平均情况 | O(n^1.3^~n^1.5^)    | O(1)  | ❌ 不稳定 |
 | 最坏情况 | O(n^2^)         | O(1)  | ❌ 不稳定 |
 
+### Hibbard 序列（2^k^ - 1）
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+const int N = 100010;
+int a[N];
+
+vector<int> generateHibbardGaps(int n) {
+    vector<int> gaps;
+    for (int k = 1; (1 << k) - 1 < n; k++)
+        gaps.push_back((1 << k) - 1);
+    reverse(gaps.begin(), gaps.end());
+    return gaps;
+}
+
+void shellSort_hibbard(int a[], int n) {
+    vector<int> gaps = generateHibbardGaps(n);
+    
+    for (int gap : gaps) {
+        for (int i = gap; i < n; i ++ ) {
+            int t = a[i];
+            int j = i;
+            while (j >= gap && a[j - gap] > t) {
+                a[j] = a[j - gap];
+                j -= gap;
+            }
+            a[j] = t;
+        }
+    }
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+    for (int i = 0; i < n; i ++ ) scanf("%d", &a[i]);
+    shellSort_hibbard(a, n);
+    for (int i = 0; i < n; i ++ ) printf("%d ", a[i]);
+    
+    return 0;
+}
+```
+
+### Knuth 序列（(3^k^ - 1)/2）
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+const int N = 100010;
+int a[N];
+
+vector<int> generateKnuthGaps(int n) {
+    vector<int> gaps;
+    for (int gap = 1; gap < n; gap = gap * 3 + 1)
+        gaps.push_back(gap);
+    reverse(gaps.begin(), gaps.end());
+    return gaps;
+}
+
+void shellSort_knuth(int a[], int n) {
+    vector<int> gaps = generateKnuthGaps(n);
+    
+    for (int gap : gaps) {
+        for (int i = gap; i < n; i ++ ) {
+            int t = a[i];
+            int j = i;
+            while (j >= gap && a[j - gap] > t) {
+                a[j] = a[j - gap];
+                j -= gap;
+            }
+            a[j] = t;
+        }
+    }
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+    for (int i = 0; i < n; i ++ ) scanf("%d", &a[i]);
+    shellSort_knuth(a, n);
+    for (int i = 0; i < n; i ++ ) printf("%d ", a[i]);
+    
+    return 0;
+}
+```
 
 
 
